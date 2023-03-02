@@ -32,4 +32,4 @@ if __name__ == "__main__":
     reader["answerChatGPT"] = answers
     reader["tokenUsage"] = tokens
 
-    reader.to_excel("./data/data_schema.xlsx")
+    reader.to_excel("./data/data_schema.xlsx", index=True)
