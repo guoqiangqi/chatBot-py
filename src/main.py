@@ -2,6 +2,7 @@
 import openai
 import pandas as pd
 import time
+from exponential_backoff import *
 
 count = 0
 timeTotal = 0
@@ -22,14 +23,26 @@ if __name__ == "__main__":
         messageQuestion = {"role": "user", "content": question}
         messages = [messageQuestion]
 
-        count += 1
         now = time.time()
-        response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages= messages
-                )
+
+        # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
+        # set a exponential backoff here instead of original request to avoid reaching the limit:
+        # 
+        # response = openai.ChatCompletion.create(
+        #         model="gpt-3.5-turbo",
+        #         messages= messages
+        #         )
+        # 
+        response = completions_with_backoff(model="gpt-3.5-turbo", messages= messages)
+
         end = time.time()
         timeTotal = end - now + timeTotal
+        count += 1
+
+        print("Handled numnber {} question.".format(count))
+
+        # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
+        # set a exponential backoff here to avoid reaching the limit.
 
         token = response["usage"]
         tokens.append(token["total_tokens"])
