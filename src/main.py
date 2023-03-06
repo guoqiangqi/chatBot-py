@@ -41,9 +41,6 @@ if __name__ == "__main__":
 
         print("Handled numnber {} question.".format(count))
 
-        # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
-        # set a exponential backoff here to avoid reaching the limit.
-
         token = response["usage"]
         tokens.append(token["total_tokens"])
         answer = response["choices"][0]['message']["content"]
