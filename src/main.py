@@ -38,7 +38,7 @@ if __name__ == "__main__":
             response = completions_with_backoff(model="gpt-3.5-turbo", messages= messages)
         except Exception as e:
             print("Fail, handling numnber {} question.".format(count))
-            tmpData = {"answers": answers}
+            tmpData = {"answers": answers, "tokens": tokens}
             df = pd.DataFrame(tmpData)
             df.to_excel("./data/tmp.xlsx", index=False)
             print("Saved current messages to temporary excel file: tmp.xlsx \n")
