@@ -9,7 +9,7 @@ timeTotal = 0
 sourceFile = "./data/openeuler_bot_backend_log.xlsx"
 
 if __name__ == "__main__":
-    reader = pd.read_excel(sourceFile, sheet_name="valid_qa", engine="openpyxl")
+    reader = pd.read_excel(sourceFile, sheet_name="openeuler_qa", engine="openpyxl")
     questiones = reader["用户输入"]
 
     messageSystem = {"role": "system", "content": "You are a openEuler community assistant, your name is Xiao Zhi."}
@@ -20,6 +20,7 @@ if __name__ == "__main__":
     answers = []
     tokens = []
     for question in questiones:
+        count += 1
         messageQuestion = {"role": "user", "content": question}
         messages = [messageQuestion]
 
@@ -33,13 +34,20 @@ if __name__ == "__main__":
         #         messages= messages
         #         )
         # 
-        response = completions_with_backoff(model="gpt-3.5-turbo", messages= messages)
+        try:
+            response = completions_with_backoff(model="gpt-3.5-turbo", messages= messages)
+        except Exception as e:
+            print("Fail, handling numnber {} question.".format(count))
+            tmpData = {"answers": answers}
+            df = pd.DataFrame(tmpData)
+            df.to_excel("./data/tmp.xlsx", index=False)
+            print("Saved current messages to temporary excel file: tmp.xlsx \n")
+            raise e
+        else:
+            print("Success, handled numnber {} question.".format(count))
 
         end = time.time()
         timeTotal = end - now + timeTotal
-        count += 1
-
-        print("Handled numnber {} question.".format(count))
 
         token = response["usage"]
         tokens.append(token["total_tokens"])
