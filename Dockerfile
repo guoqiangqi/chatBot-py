@@ -9,4 +9,4 @@ WORKDIR /chatbot
 RUN pip install -r requirements.txt
 ENV FLASK_APP src/main.py
 
-CMD ["flask", "run"]
+CMD ["flask", "run", "--host=127.0.0.1", "--port=8080"]
