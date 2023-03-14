@@ -7,6 +7,7 @@ from exponential_backoff import *
 count = 0
 
 def chatWithGPT(messages, model="gpt-3.5-turbo"):
+    global count
     count += 1
     # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
         # set a exponential backoff here instead of original request to avoid reaching the limit:
