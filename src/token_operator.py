@@ -6,8 +6,8 @@ from user_manager import *
 # TODO: optimize the implementation here according to your needs.
 secret_key = "your_secret_key"
 
-def createTokenForUser(userUUID):
-    userMatch = indexUserWithUUID(userUUID)
+def createTokenForUser(userID):
+    userMatch = indexUserWithID(userID)
     if not userMatch:
         return None
 
@@ -15,7 +15,7 @@ def createTokenForUser(userUUID):
     expires_in = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
     payload = {
         'user_id': user.id,
-        'user_name': user.name
+        'user_name': user.name,
         'expir': expir
     }
 
