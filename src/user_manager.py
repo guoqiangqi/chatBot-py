@@ -9,14 +9,14 @@ class User:
         self.access = access
 
     def __str__(self):
-        return f"User(id='{self.id}')"
+        return f"User(id='{str(self.id)}')"
 
-userList = [User(uuid.uuid1(), "temporaryUser", "default_password")]
+userList = [User(str(uuid.uuid1()), "temporary_user", "default_password")]
 usernameTable = {u.name: u for u in userList}
 useridTable = {u.id: u for u in userList}
 
 def createUser(username, password, access):
-    users.append(User(uuid.uuid1(), username, password, access))
+    users.append(User(str(uuid.uuid1()), username, password, access))
 
 def indexUserWithID(userID):
     return useridTable.get(userID, None)
@@ -30,5 +30,5 @@ def authenticate(username, password):
         return user
 
 def identity(payload):
-    userID = payload['id']
+    userID = payload['identity']
     return useridTable.get(userID, None)
