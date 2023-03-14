@@ -46,7 +46,6 @@ if __name__ == "__main__":
     answers = []
     tokens = []
     for question in questiones:
-        count += 1
         messageQuestion = {"role": "user", "content": question}
         messages = [messageQuestion]
 
