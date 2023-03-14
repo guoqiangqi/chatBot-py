@@ -7,5 +7,6 @@ COPY . /chatbot
 WORKDIR /chatbot
 
 RUN pip install -r requirements.txt
+ENV FLASK_APP src/main.py
 
 CMD ["flask", "run"]
