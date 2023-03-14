@@ -5,11 +5,9 @@ import time
 from exponential_backoff import *
 
 count = 0
-timeTotal = 0
-sourceFile = "./data/openeuler_bot_backend_log.xlsx"
-
 
 def chatWithGPT(messages, model="gpt-3.5-turbo"):
+    count += 1
     # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
         # set a exponential backoff here instead of original request to avoid reaching the limit:
         # 
@@ -32,6 +30,10 @@ def chatWithGPT(messages, model="gpt-3.5-turbo"):
     return response
 
 if __name__ == "__main__":
+
+    timeTotal = 0
+    sourceFile = "./data/openeuler_bot_backend_log.xlsx"
+
     reader = pd.read_excel(sourceFile, sheet_name="openeuler_qa", engine="openpyxl")
     questiones = reader["用户输入"]
 
