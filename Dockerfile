@@ -10,3 +10,6 @@ RUN pip install -r requirements.txt
 ENV FLASK_APP src/main.py
 
 CMD ["flask", "run", "--host=127.0.0.1", "--port=8080"]
+
+# NOTICE: set OPENAI_API_KEY env variable when run whith docker, just like:
+# docker run -dit -p 8080:8080 -e OPENAI_API_KEY="xx" image_name
