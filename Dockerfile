@@ -6,10 +6,9 @@ FROM python:3.8.12-slim-buster
 COPY . /chatbot
 WORKDIR /chatbot
 
-RUN pip install -r requirements.txt
-ENV FLASK_APP src/main.py
+RUN pip install -r requirements.txt && pip install gunicorn==20.1.0
 
-CMD ["flask", "run", "--host=127.0.0.1", "--port=8080"]
+CMD ["gunicorn", "-w 5", "-b 127.0.0.1:8080", "--chdir", " src/", "main:app"]
 
 # NOTICE: set OPENAI_API_KEY env variable when run whith docker, just like:
-# docker run -dit -p 8080:8080 -e OPENAI_API_KEY="xx" image_name
+# docker run -dit -p 8080:8080 -e OPENAI_API_KEY="xx" image_name #gunicorn -w 4 -b 127.0.0.1:8080 --chdir src/ main:app
