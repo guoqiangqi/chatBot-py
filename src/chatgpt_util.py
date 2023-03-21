@@ -4,11 +4,7 @@ import pandas as pd
 import time
 from exponential_backoff import *
 
-count = 0
-
 def chatWithGPT(messages, model="gpt-3.5-turbo"):
-    global count
-    count += 1
     # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
         # set a exponential backoff here instead of original request to avoid reaching the limit:
         # 
@@ -20,14 +16,14 @@ def chatWithGPT(messages, model="gpt-3.5-turbo"):
     try:
         response = completions_with_backoff(model=model, messages=messages)
     except Exception as e:
-        print("Fail, handling numnber {} question.".format(count))
+        print("Exception happened during handling question.")
         tmpData = {"answers": answers, "tokens": tokens}
         df = pd.DataFrame(tmpData)
         df.to_excel("./data/tmp.xlsx", index=False)
         print("Saved current messages to temporary excel file: tmp.xlsx \n")
         raise e
     else:
-        print("Success, handled numnber {} question.".format(count))
+        print("Handled question successfully.")
     return response
 
 if __name__ == "__main__":
@@ -64,7 +60,7 @@ if __name__ == "__main__":
     reader["answerChatGPT"] = answers
     reader["tokenUsage"] = tokens
 
-    print("QA finished: {} questiones have been processed, {} seconds have been spent.".format(count, timeTotal))
+    # print("QA finished: {} questiones have been processed, {} seconds have been spent.".format(count, timeTotal))
     print("Writing back to excel....")
     reader.to_excel("./data/openeuler_bot_backend_log_compare.xlsx", index=False)
     print("Job finished!")
