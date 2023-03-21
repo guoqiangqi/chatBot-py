@@ -11,12 +11,12 @@ class User:
     def __str__(self):
         return f"User(id='{str(self.id)}')"
 
-userList = [User(str(uuid.uuid1()), "temporary_user", "default_password")]
+userList = [User(str(uuid.uuid5(uuid.NAMESPACE_DNS, "temporary_user_id")), "temporary_user", "default_password")]
 usernameTable = {u.name: u for u in userList}
 useridTable = {u.id: u for u in userList}
 
 def createUser(username, password, access):
-    users.append(User(str(uuid.uuid1()), username, password, access))
+    users.append(User(str(uuid.uuid5(uuid.NAMESPACE_DNS, username)), username, password, access))
 
 def indexUserWithID(userID):
     return useridTable.get(userID, None)
