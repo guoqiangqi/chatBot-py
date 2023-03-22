@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_restful import Resource, Api
 from flask_jwt import JWT, jwt_required, current_identity
 from user_manager import authenticate, identity
@@ -30,9 +30,13 @@ class ChatGPT(Resource):
         messageQuestion = {"role": "user", "content": question}
         messages = [messageSystem, messageQuestion]
 
-        response = chatWithGPT(messages, model="gpt-3.5-turbo")
+        response = chatWithGPT(messages, model="gpt-3.5-turbo", stream=True)
 
-        return response
+        def generate():
+            for chunk in response:
+                yield str(chunk['choices'][0]['delta'])
+
+        return Response(generate(), mimetype='text/event-stream')
 
 api.add_resource(ChatGPT, '/chatgpt')
 

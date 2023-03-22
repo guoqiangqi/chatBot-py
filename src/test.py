@@ -30,9 +30,9 @@ if __name__ == "__main__":
     }
 
     try:
-        response = requests.post(url=chatURL, headers=headers, json=chatPayload)
+        response = requests.post(url=chatURL, headers=headers, json=chatPayload, stream=True)
     except Exception as e:
         print(e)
     else:
-        # print(response)
-        print(response.json())
+        for line in response.iter_lines():
+            print(line)
