@@ -4,7 +4,7 @@ import pandas as pd
 import time
 from exponential_backoff import *
 
-def chatWithGPT(messages, model="gpt-3.5-turbo"):
+def chatWithGPT(messages, model="gpt-3.5-turbo", stream=False):
     # Rate limit for free account to use gpt-3.5-turbo is 20 per min, 
         # set a exponential backoff here instead of original request to avoid reaching the limit:
         # 
@@ -14,7 +14,7 @@ def chatWithGPT(messages, model="gpt-3.5-turbo"):
         #         )
         # 
     try:
-        response = completions_with_backoff(model=model, messages=messages)
+        response = completions_with_backoff(model=model, messages=messages, stream=stream)
     except Exception as e:
         print("Exception happened during handling question.")
         tmpData = {"answers": answers, "tokens": tokens}
