@@ -34,5 +34,9 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
     else:
+        str = ""
         for line in response.iter_lines():
-            print(line)
+            message = line.decode()
+            if "content" in message:
+                str += message[14:-1]
+        print(str)
