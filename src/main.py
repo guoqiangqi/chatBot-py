@@ -34,7 +34,7 @@ class ChatGPT(Resource):
 
         def generate():
             for chunk in response:
-                yield str(chunk['choices'][0]['delta'])
+                yield str(chunk['choices'][0]['delta']).strip("{}\n") + "\n"
 
         return Response(generate(), mimetype='text/event-stream')
 
