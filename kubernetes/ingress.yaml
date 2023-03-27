@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chatbot-backend-ingress
+  namespace: chatbot
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-dns01
+spec:
+  rules:
+  - host: YOUR_DOMAIN_NAME
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chatbot-backend-service
+            port:
+              number: 8080
+
+  tls:
+  - hosts:
+    - YOUR_DOMAIN_NAME
+    secretName: chatbot-backend-xxx-xxx-tls

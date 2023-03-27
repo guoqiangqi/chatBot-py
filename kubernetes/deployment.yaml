@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-backend
+  namespace: chatbot
+spec:
+  selector:
+    matchLabels:
+      app: chatbot-backend
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: chatbot-backend
+    spec:
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: workingnode
+      #           operator: In
+      #           values: ["true"]
+      containers:
+      - name: chatbot
+        image: guoqiangqi/chatbot-backend:v1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OPENAI_API_KEY
+          value: "YOUR SERCRET KEY"
