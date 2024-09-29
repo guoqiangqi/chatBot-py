@@ -1,0 +1,220 @@
+- database_info:
+    database_host: 0.0.0.0
+    database_instance: postgres
+    database_port: '5444'
+    database_pwd: '123456'
+    database_type: postgres
+    database_user: postgres
+  table_info_list:
+  - sql_example_list:
+    - question: 你可以告诉我openEuler支持的商业软件中，哪种类型的软件版本最多？
+      sql: SELECT `type`, COUNT(*) AS software_count FROM public.oe_compatibility_commercial_software
+        GROUP BY `type` ORDER BY software_count DESC LIMIT 1;
+    - question: 在openEuler支持的商业软件中，哪一种类型的软件版本最多的？
+      sql: SELECT type, COUNT(*) AS software_count FROM public.oe_compatibility_commercial_software
+        GROUP BY type ORDER BY software_count DESC LIMIT 1;
+    - question: 你能告诉我openEuler支持的商业软件中，每种openEuler版本对应有多少种不同的软件类型吗？
+      sql: "SELECT openeuler_version, COUNT(DISTINCT type) AS software_type_count\
+        \ \nFROM oe_compatibility_commercial_software \nGROUP BY openeuler_version;"
+    - question: 湖南欧拉生态创新中心在openEuler 22.03-LTS-SP1版本下，测试了哪些数据库软件？
+      sql: SELECT DISTINCT product_name, product_version FROM public.oe_compatibility_commercial_software
+        WHERE type = '数据库' AND openeuler_version = 'openEuler22.03-LTS-SP1' AND test_organization
+        ILIKE '%湖南欧拉生态创新中心%';
+    - question: 可以这样提问：能告诉我openEuler支持的商业软件是由哪些机构测试的吗？
+      sql: "SELECT DISTINCT test_organization \nFROM public.oe_compatibility_commercial_software;"
+    table_name: oe_compatibility_commercial_software
+  - sql_example_list:
+    - question: 你可以告诉我openEuler在支持的开源软件中，有多少款软件是属于应用程序类别？
+      sql: SELECT COUNT(*) AS app_software_count FROM oe_compatibility_open_source_software
+        WHERE type = 'app-software';
+    - question: 你可以这样提问：“能帮我查一下openEuler支持哪些开源软件，并且这些软件的开源协议是GPLv2+的吗？”
+      sql: SELECT DISTINCT "softwareName" FROM public.oe_compatibility_open_source_software
+        WHERE "license" LIKE '%GPLv2%';
+    - question: 你可以告诉我openEuler在哪个openEuler版本中支持了哪些架构的开源软件吗？
+      sql: 'SELECT distinct openeuler_version, arch, softwareName, version
+
+        FROM public.oe_compatibility_open_source_software
+
+        ORDER BY openeuler_version, arch;'
+    - question: 你可以告诉我openEuler在哪个openEuler版本中支持的开源软件类型最多的，还有这些软件分别属于哪个类别？
+      sql: 'SELECT openeuler_version, type, category, COUNT(*) as software_count
+
+        FROM oe_compatibility_open_source_software
+
+        GROUP BY openeuler_version, type, category
+
+        ORDER BY software_count DESC
+
+        LIMIT 1;'
+    - question: 可以告诉我openEuler支持哪些开源协议的软件，且这些软件的版本至少是20.03的吗？
+      sql: SELECT DISTINCT "softwareName", "license", "version" FROM public.oe_compatibility_open_source_software
+        WHERE openeuler_version LIKE 'openEuler-20.03%' AND "license" IS NOT NULL;
+    table_name: oe_compatibility_open_source_software
+  - sql_example_list:
+    - question: openEuler社区的每个委员会都有哪些成员，他们分别担任什么职务？
+      sql: SELECT DISTINCT committee_name, role, name FROM oe_community_organization_structure;
+    - question: 请问openEuler社区中担任顾问专家委员会成员的人员有哪些？
+      sql: SELECT DISTINCT name FROM oe_community_organization_structure WHERE role
+        = '成员' and committee_name = 'openEuler委员会顾问专家委员会';
+    - question: 能帮我查一下openEuler社区中，担任委员职位的成员有哪些，并列出他们的姓名吗？
+      sql: SELECT DISTINCT name FROM oe_community_organization_structure WHERE role
+        = '委员';
+    - question: 请问在openEuler社区中，担任委员职务的成员有哪些，他们的姓名分别是什么？
+      sql: SELECT DISTINCT name AS "委员姓名" FROM oe_community_organization_structure
+        WHERE role = '委员';
+    - question: openEuler社区中，每个委员会的职位都是委员的成员数量总共有多少？
+      sql: SELECT committee_name, COUNT(*) as member_count FROM oe_community_organization_structure
+        WHERE role = '委员' GROUP BY committee_name;
+    table_name: oe_community_organization_structure
+  - sql_example_list:
+    - question: 我想知道openEuler-SA-2023-1999公告影响的是哪个组件，并且它对应的安全公告链接是什么？
+      sql: SELECT DISTINCT affected_component, details FROM oe_compatibility_security_notice
+        WHERE security_notice_no = 'openEuler-SA-2023-1999';
+    - question: 我想知道openEuler-SA-2023-1999公告的详细内容链接是什么？
+      sql: SELECT DISTINCT details FROM oe_compatibility_security_notice WHERE security_notice_no
+        = 'openEuler-SA-2023-1999';
+    - question: 我能查看哪些openEuler版本的安全公告是在2023年发布的？
+      sql: SELECT DISTINCT openeuler_version FROM oe_compatibility_security_notice
+        WHERE announcement_time LIKE '%2023%' AND notice_type = 'security bulletin';
+    - question: 我想知道openEuler-SA-2023-1999公告影响的是哪个组件，并且它对应的安全公告链接是什么？
+      sql: SELECT DISTINCT affected_component, details FROM oe_compatibility_security_notice
+        WHERE security_notice_no = 'openEuler-SA-2023-1999';
+    - question: 我想知道openEuler-SA-2023-1999公告的详细描述和解决方法，它是关于哪个组件的？
+      sql: SELECT DISTINCT affected_component, details FROM oe_compatibility_security_notice
+        WHERE security_notice_no = 'openEuler-SA-2023-1999';
+    table_name: oe_compatibility_security_notice
+  - sql_example_list:
+    - question: 能帮我找出那些支持openEuler-22.03-LTS或更高版本，且硬件型号带有'Kunpeng'的整机，它们的CPU型号和对应的内存配置是多少？
+      sql: "SELECT DISTINCT cpu, ram \nFROM oe_compatibility_overall_unit \nWHERE\
+        \ openeuler_version >= 'openEuler-22.03-LTS' \nAND hardware_model LIKE '%Kunpeng%';"
+    - question: 我能知道openEuler支持的各版本对应有多少种不同的硬件架构吗？
+      sql: SELECT DISTINCT openeuler_version, architecture FROM oe_compatibility_overall_unit;
+    - question: 能帮我查一下所有由"新华三"硬件厂家生产的，且支持openEuler-20.03 LTS SP2版本的整机，它们分别是什么型号和使用了哪种架构吗？
+      sql: 'SELECT DISTINCT hardware_model, architecture
+
+        FROM oe_compatibility_overall_unit
+
+        WHERE hardware_factory = ''新华三'' AND openeuler_version ILIKE ''openEuler-20.03
+        LTS SP2%'';'
+    - question: 你可以告诉我openEuler-22.03-LTS版本都支持哪些型号的CPU和硬件厂商的整机吗？
+      sql: SELECT DISTINCT hardware_factory, cpu, hardware_model FROM oe_compatibility_overall_unit
+        WHERE openeuler_version = 'openEuler-22.03-LTS';
+    - question: 开放问题：能告诉我openEuler-22.03-LTS支持哪些型号的CPU，以及对应的整机制造商和型号吗？
+      sql: SELECT DISTINCT hardware_model, hardware_factory, cpu FROM oe_compatibility_overall_unit
+        WHERE openeuler_version = 'openEuler-22.03-LTS';
+    table_name: oe_compatibility_overall_unit
+  - sql_example_list:
+    - question: 你可以告诉我openEuler支持的所有OSV(操作系统供应商)及其对应版本有哪些吗？
+      sql: SELECT DISTINCT osv_name, openeuler_version FROM public.oe_compatibility_osv;
+    - question: 我可以帮你查询一下openEuler都有哪些操作系统供应商伙伴及其对应的技术版本，是吗？
+      sql: SELECT DISTINCT osv_name, openeuler_version FROM public.oe_compatibility_osv;
+    - question: 你可以问我：“哪一款openEuler版本与KylinSec-Server-3.6.1-x86_64-dvd.iso这个OSV的版本兼容？”
+      sql: SELECT DISTINCT openeuler_version FROM public.oe_compatibility_osv WHERE
+        osv_name = '湖南麒麟信安科技股份有限公司' AND os_version = 'KylinSec-Server-3.6.1-x86_64-dvd.iso';
+    - question: 能帮我找出所有在openEuler相关的OSV表中，提供嵌入式版本的OSV供应商及其对应的操作系统版本信息吗？
+      sql: SELECT DISTINCT osv_name, os_version, openeuler_version FROM public.oe_compatibility_osv
+        WHERE type LIKE '%嵌入式%' AND osv_name IS NOT NULL;
+    - question: 请问，哪个openEuler版本与超聚变数字技术有限公司的aarch64架构的qinggeng-image-bmc-set-aarch64-23.09-beta-001.iso兼容？
+      sql: SELECT DISTINCT openeuler_version FROM public.oe_compatibility_osv WHERE
+        osv_name = '超聚变数字技术有限公司' AND arch = 'aarch64' AND os_version = 'qinggeng-image-bmc-set-aarch64-23.09-beta-001.iso';
+    table_name: oe_compatibility_osv
+  - sql_example_list:
+    - question: 用户可能会问：“我能在openEuler 22.03-LTS-SP4版本中找到哪些型号的Intel芯片的驱动信息？”
+      sql: 'SELECT DISTINCT driver_name, chip_model, version
+
+        FROM public.oe_compatibility_card
+
+        WHERE openeuler_version = ''openEuler-22.03-LTS-SP4'' AND chip_vendor = ''Intel'';'
+    - question: 我可以帮你找出openEuler支持的所有板卡型号，这些信息是按照哪一版本的openEuler列出的？
+      sql: 'SELECT DISTINCT board_model, openeuler_version
+
+        FROM public.oe_compatibility_card
+
+        ORDER BY openeuler_version, board_model;'
+    - question: 能帮我找出openEuler支持的所有板卡驱动中，哪些是在2023年之后发布的，还有它们对应的驱动版本和型号吗？
+      sql: 'SELECT DISTINCT driver_name, driver_date, board_model
+
+        FROM oe_compatibility_card
+
+        WHERE driver_date >= ''2023-01-01'';'
+    - question: 你可以告诉我，openEuler支持的x86_64架构的板卡型号中，哪些厂商的芯片被最多地使用了吗？
+      sql: SELECT chip_vendor, COUNT(*) AS most_used_chips FROM oe_compatibility_card
+        WHERE type = 'NIC' AND architecture = 'x86_64' GROUP BY chip_vendor ORDER
+        BY most_used_chips DESC LIMIT 1;
+    - question: 能告诉我openEuler支持的板卡型号中，哪些是来自Intel的芯片厂商吗？
+      sql: SELECT DISTINCT board_model, driver_name, openeuler_version FROM public.oe_compatibility_card
+        WHERE chip_vendor = 'Intel' ORDER BY openeuler_version;
+    table_name: oe_compatibility_card
+  - sql_example_list:
+    - question: 在2024年，哪些openEuler-20.03-LTS版本的系统遭到了CVE-2024-36032漏洞的影响？
+      sql: SELECT DISTINCT `affected_product`, `cve_id`, `announcement_time` FROM
+        `oe_compatibility_cve_database` WHERE `cve_id` = 'CVE-2024-36032' AND `affected_product`
+        LIKE 'openEuler-20.03-LTS%' AND EXTRACT(YEAR FROM `announcement_time`) = 2024;
+    - question: 在2024年，哪些openEuler-20.03-LTS-SP4的漏洞公告里，cvss评分大于0并且影响了系统的可用性？
+      sql: SELECT DISTINCT `affected_product`, `cve_id`, `announcement_time`, `cvsss_core_oe`
+        FROM `oe_compatibility_cve_database` WHERE `affected_product` = 'openEuler-20.03-LTS-SP4'
+        AND EXTRACT(YEAR FROM `announcement_time`) = 2024 AND cvsss_core_oe > 0 AND
+        `availability_oe` = 'High';
+    - question: 能告诉我CVE-2024-41053漏洞影响了哪些openEuler社区组的软件包吗？
+      sql: SELECT DISTINCT package_name FROM oe_compatibility_cve_database WHERE cve_id
+        = 'CVE-2024-41053';
+    - question: '"有哪些软件包因为CVE-2024-41053的公告而受到了影响？"'
+      sql: SELECT DISTINCT package_name FROM oe_compatibility_cve_database WHERE cve_id
+        = 'CVE-2024-41053';
+    - question: 你能告诉我CVE-2024-41053漏洞影响了openEuler的哪些具体版本，并且这些版本的公告时间是什么时候吗？
+      sql: SELECT DISTINCT `cve_id`, `affected_product`, `announcement_time` FROM
+        `oe_compatibility_cve_database` WHERE `cve_id` = 'CVE-2024-41053';
+    table_name: oe_compatibility_cve_database
+  - sql_example_list:
+    - question: 你可以告诉我，对于openEuler-20.09版本的，有哪些官方软件包的下载链接是可用的？
+      sql: "SELECT DISTINCT openeuler_version, name, srcrpmpackurl \nFROM oe_compatibility_oepkgs\
+        \ \nWHERE openeuler_version = 'openEuler-20.09' \nAND repotype = 'openeuler_official';"
+    - question: 我想知道openEuler支持的官方软件包中，哪个版本的crun提供了aarch64架构的下载链接？
+      sql: "SELECT DISTINCT openeuler_version, name, `rpmpackurl` \nFROM oe_compatibility_oepkgs\
+        \ \nWHERE repotype = 'openeuler_official' \nAND name = 'crun' \nAND arch =\
+        \ 'aarch64';"
+    - question: 好的，你可能会问：“在openEuler的所有支持软件包中，有哪些是官方版本，并且它们在哪个openEuler版本中提供，比如openEuler-21.09？”
+      sql: "SELECT DISTINCT `openeuler_version`, `name`, `version` \nFROM `oe_compatibility_oepkgs`\
+        \ \nWHERE `repotype` = 'openeuler_official';"
+    - question: 能否告诉我openEuler支持的所有软件包中，哪些是官方版本，并且它们在哪个openEuler版本中提供？
+      sql: SELECT DISTINCT `openeuler_version`, name FROM oe_compatibility_oepkgs
+        WHERE repotype = 'openeuler_official' ORDER BY openeuler_version;
+    - question: 你能告诉我openEuler-21.09版本的哪些官方软件包是为x86_64架构提供的？
+      sql: "SELECT DISTINCT openeuler_version, name, version \nFROM oe_compatibility_oepkgs\
+        \ \nWHERE openeuler_version = 'openEuler-21.09' \nAND repotype = 'openeuler_official'\
+        \ \nAND arch = 'x86_64';"
+    table_name: oe_compatibility_oepkgs
+  - sql_example_list:
+    - question: 能帮我查一下openEuler的哪个版本是第一个发布的，它的发布日期是什么时候吗？
+      sql: SELECT MIN(publish_time) AS first_release_date, openeuler_version FROM
+        public.oe_community_openeuler_version ORDER BY publish_time ASC LIMIT 1;
+    - question: 请问哪个openEuler版本的发布日期是最早，属于长期支持类型的版本？
+      sql: SELECT MIN(publish_time) AS earliest_publish_time, version_type FROM public.oe_community_openeuler_version
+        WHERE version_type = '长期支持版本' GROUP BY version_type;
+    - question: 可以告诉我openEuler社区发布了哪些长期支持版本，它们的内核版本和发布时间是什么？
+      sql: SELECT DISTINCT openeuler_version, kernel_version, publish_time FROM public.oe_community_openeuler_version
+        WHERE version_type = '长期支持版本';
+    - question: 你能告诉我openEuler-22.03-LTS-Next版本的发布日期是什么时候吗？
+      sql: SELECT publish_time FROM public.oe_community_openeuler_version WHERE openeuler_version
+        = 'openEuler-22.03-LTS-Next';
+    - question: 你可以告诉我openEuler-22.03-LTS-SP1版本的发布时间是什么时候吗？
+      sql: SELECT publish_time FROM public.oe_community_openeuler_version WHERE openeuler_version
+        = 'openEuler-22.03-LTS-SP1';
+    table_name: oe_community_openeuler_version
+  - sql_example_list:
+    - question: 有没有支持Seagate ST4000NM0025硬盘的openEuler解决方案？
+      sql: SELECT DISTINCT solution FROM oe_compatibility_solution WHERE hard_disk_drive
+        LIKE '%Seagate ST4000NM0025%';
+    - question: 用户可能会问：“对于Intel Xeon Silver 4316 CPU的服务器，OpenEuler支持哪些版本？”
+      sql: "SELECT DISTINCT openeuler_version \nFROM oe_compatibility_solution \n\
+        WHERE server_model = 'Intel Xeon Silver 4316 CPU';"
+    - question: 对于那些在2288H V5型号服务器上被支持的OpenEuler解决方案，它们对应的openEuler版本有哪些？
+      sql: SELECT DISTINCT openeuler_version FROM oe_compatibility_solution WHERE
+        server_model ILIKE '2288H V5';
+    - question: 能帮我找出那些支持Intel(R) Xeon(R)系列CPU，并且配置了LSI SAS3408磁盘冗余阵列的服务器，它们分别来自哪个厂家吗？
+      sql: SELECT DISTINCT server_vendor FROM oe_compatibility_solution WHERE cpu
+        LIKE '%Intel(R) Xeon(R)%' AND raid LIKE '%LSI SAS3408%';
+    - question: 你能告诉我哪些openeuler支持的解决方案使用了MegaRAID 9560-8i这个磁盘驱动吗？
+      sql: SELECT DISTINCT solution FROM oe_compatibility_solution WHERE hard_disk_drive
+        = 'MegaRAID 9560-8i';
+    table_name: oe_compatibility_solution
